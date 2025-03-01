@@ -21,7 +21,7 @@ const Header = () => {
   // using useNavigate from react router dom
   const navigate = useNavigate();
   // user is not logged in by default
-  const user = true;
+  const user = false;
   return (
     <nav className="py-4 flex justify-between items-center">
       {/* link form react router dom */}
