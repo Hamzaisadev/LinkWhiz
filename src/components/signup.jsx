@@ -1,12 +1,28 @@
-import { UrlState } from "@/context";
-import useFetch from "@/hooks/use-fetch";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { PulseLoader } from "react-spinners";
+import Error from "./error";
+import * as Yup from "Yup";
+import useFetch from "@/hooks/use-fetch";
 
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { UrlState } from "@/context";
+import { signup } from "@/db/apiAuth";
 const Signup = () => {
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
+    profile_pic: null,
   });
 
   const navigate = useNavigate();
@@ -16,37 +32,39 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: files ? files[0] : value,
     }));
   };
 
-  const { data, error, loading, fn: fnLogin } = useFetch(login, formData);
+  const { data, error, loading, fn: fnSignup } = useFetch(signup, formData);
   const { fetchUser } = UrlState();
   useEffect(() => {
     if (error === null && data) {
       navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
       fetchUser();
     }
-  }, [data, error]);
+  }, [error, loading]);
 
-  const handleLogin = async () => {
+  const handleSignup = async () => {
     setErrors({});
 
     try {
       const schema = Yup.object().shape({
+        name: Yup.string().required("Name is required"),
         email: Yup.string()
           .email("Invalid Email")
           .required("Email is Required"),
         password: Yup.string()
           .min(6, "Password must be at least 6 characters")
           .required("Password is Required"),
+        profile_pic: Yup.mixed().required("Profile picture is required"),
       });
 
       await schema.validate(formData, { abortEarly: false });
-      await fnLogin();
+      await fnSignup();
     } catch (e) {
       const newErrors = {};
       e?.inner.forEach((err) => {
@@ -61,11 +79,22 @@ const Signup = () => {
     <div>
       <Card>
         <CardHeader>
-          <CardTitle>Login</CardTitle>
-          <CardDescription>Login to your account</CardDescription>
+          <CardTitle>Signup</CardTitle>
+          <CardDescription>
+            Create a new account if you haven&rsquo;t already{" "}
+          </CardDescription>
           {error && <Error message={error.message} />}
         </CardHeader>
         <CardContent className="space-y-2">
+          <div className="space-y-1">
+            <Input
+              name="name"
+              type="text"
+              placeholder="Enter Your Name"
+              onChange={handleInputChange}
+            />
+            {errors.name && <Error message={errors.name} />}
+          </div>
           <div className="space-y-1">
             <Input
               name="email"
@@ -84,10 +113,23 @@ const Signup = () => {
             />
             {errors.password && <Error message={errors.password} />}
           </div>
+          <div className="space-y-1">
+            <Input
+              name="profile_pic"
+              type="file"
+              accept="image/*"
+              onChange={handleInputChange}
+            />
+            {errors.profile_pic && <Error message={errors.profile_pic} />}
+          </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleLogin}>
-            {loading ? <PulseLoader color="#d31b1b" size={10} /> : "Login"}
+          <Button onClick={handleSignup}>
+            {loading ? (
+              <PulseLoader color="#d31b1b" size={10} />
+            ) : (
+              "Create Account"
+            )}
           </Button>
         </CardFooter>
       </Card>
