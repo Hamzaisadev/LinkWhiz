@@ -29,7 +29,7 @@ export async function signup({ name, email, password, profile_pic }) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    option: {
+    options: {
       data: {
         name,
         profile_pic: `${supabaseUrl}/storage/v1/object/public/profile_pic/${fileName}`,
@@ -40,4 +40,9 @@ export async function signup({ name, email, password, profile_pic }) {
   if (error) throw new Error(error.message);
 
   return data;
+}
+
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw new Error(error.message);
 }
