@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AppLayout from "./layout/AppLayout";
 import Landing from "./pages/landing";
@@ -45,11 +46,15 @@ const router = createBrowserRouter([
   },
 ]);
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
-    <UrlProvider>
-      <RouterProvider router={router} />;
-    </UrlProvider>
+    <QueryClientProvider client={queryClient}>
+      <UrlProvider>
+        <RouterProvider router={router} />
+      </UrlProvider>
+    </QueryClientProvider>
   );
 }
 

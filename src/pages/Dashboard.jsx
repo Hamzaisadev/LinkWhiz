@@ -3,10 +3,12 @@ import LinksCard from "@/components/LinksCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { UrlState } from "@/context";
 import { getClicksForUrls } from "@/db/apiClicks";
 import { getUrls } from "@/db/apiUrls";
 import useFetch from "@/hooks/use-fetch";
+import { useQuery } from "@tanstack/react-query";
 import { Filter, FilterIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { BarLoader } from "react-spinners";
@@ -15,11 +17,15 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { user } = UrlState();
   const {
-    loading,
+    isLoading: isUrlsLoading,
     error,
     data: urls,
-    fn: fnUrls,
-  } = useFetch(getUrls, user?.id);
+    refetch: refetchUrls,
+  } = useQuery({
+    queryKey: ["urls", user?.id],
+    queryFn: () => getUrls(user?.id),
+    enabled: !!user?.id,
+  });
 
   const {
     loading: loadingClicks,
@@ -31,7 +37,7 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    fnUrls();
+    refetchUrls();
   }, []);
 
   useEffect(() => {
@@ -41,12 +47,31 @@ const Dashboard = () => {
   const filteredUrls = urls?.filter((url) =>
     url.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const LoadingSkeleton = () => (
+    <>
+      <div className="grid grid-cols-2 gap-4">
+        <Skeleton className="h-[120px] w-full rounded-lg" />
+        <Skeleton className="h-[120px] w-full rounded-lg" />
+      </div>
+      <div className="flex justify-between">
+        <Skeleton className="h-10 w-[200px]" />
+        <Skeleton className="h-10 w-[120px]" />
+      </div>
+      {[1, 2, 3].map((i) => (
+        <Skeleton key={i} className="h-[100px] w-full rounded-lg my-4" />
+      ))}
+    </>
+  );
 
+  if (isUrlsLoading) {
+    return (
+      <div className="flex flex-col gap-8">
+        <LoadingSkeleton />
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col gap-8">
-      {(loading || loadingClicks) && (
-        <BarLoader width={"100%"} color="#d31b1b" />
-      )}
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader>
@@ -79,7 +104,7 @@ const Dashboard = () => {
       </div>
       {error && <Error message={error?.message} />}
       {(filteredUrls || []).map((url, i) => {
-        return <LinksCard key={i} url={url} fetchUrls={fnUrls} />;
+        return <LinksCard key={i} url={url} fetchUrls={refetchUrls} />;
       })}
     </div>
   );
