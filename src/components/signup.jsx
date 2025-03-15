@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
 import {
   Card,
   CardContent,
@@ -17,6 +18,8 @@ import useFetch from "@/hooks/use-fetch";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { UrlState } from "@/context";
 import { signup } from "@/db/apiAuth";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 const Signup = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -43,8 +46,16 @@ const Signup = () => {
   const { fetchUser } = UrlState();
   useEffect(() => {
     if (error === null && data) {
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      toast.success("Signed up successfully");
+      setTimeout(() => {
+        navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      }, 2000);
       fetchUser();
+    }
+    console.log("Error:", error);
+    console.log("Data:", data);
+    if (error) {
+      toast.error("Signup failed: " + error.message);
     }
   }, [error, loading]);
 
@@ -124,11 +135,14 @@ const Signup = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleSignup}>
+          <Button onClick={handleSignup} disabled={loading}>
             {loading ? (
-              <PulseLoader color="#d31b1b" size={10} />
+              <>
+                <Loader2 className="size-5 animate-spin" />
+                Signing Up
+              </>
             ) : (
-              "Create Account"
+              "Sign Up"
             )}
           </Button>
         </CardFooter>

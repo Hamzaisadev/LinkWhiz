@@ -16,6 +16,8 @@ import useFetch from "@/hooks/use-fetch";
 import { login } from "@/db/apiAuth";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { UrlState } from "@/context";
+import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -41,8 +43,14 @@ const Login = () => {
   const { fetchUser } = UrlState();
   useEffect(() => {
     if (error === null && data) {
-      navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      toast.success("Logged in Successfully");
+      setTimeout(() => {
+        navigate(`/dashboard?${longLink ? `createNew=${longLink}` : ""}`);
+      }, 2000);
       fetchUser();
+    }
+    if (error) {
+      toast.error(error.message);
     }
   }, [data, error]);
 
@@ -100,8 +108,15 @@ const Login = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleLogin}>
-            {loading ? <PulseLoader color="#d31b1b" size={10} /> : "Login"}
+          <Button onClick={handleLogin} disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="size-5 animate-spin" />
+                Logging in
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
         </CardFooter>
       </Card>

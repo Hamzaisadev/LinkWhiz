@@ -20,6 +20,7 @@ import { UrlState } from "@/context";
 import useFetch from "@/hooks/use-fetch";
 import { logout } from "@/db/apiAuth";
 import { BarLoader } from "react-spinners";
+import toast from "react-hot-toast";
 
 const Header = () => {
   // using useNavigate from react router dom
@@ -28,6 +29,33 @@ const Header = () => {
   const { user, fetchUser } = UrlState();
 
   const { loading, fn: fnLogout } = useFetch(logout);
+
+  const handleLogout = () => {
+    toast
+      .promise(
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            fnLogout()
+              .then(() => {
+                resolve();
+              })
+              .catch((error) => {
+                reject(error);
+              });
+          }, 1000);
+        }),
+        {
+          loading: "Logging out...",
+          success: "logged out successfully",
+          error: "Failed to logout",
+        }
+      )
+      .then(() => {
+        fetchUser();
+        navigate("/");
+      });
+  };
+
   console.log(user);
   return (
     <>
@@ -63,16 +91,7 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem className="text-red-700 font-bold">
                   <LogOut className="mr-2 h-2 w-4" />
-                  <span
-                    onClick={() => {
-                      fnLogout().then(() => {
-                        fetchUser();
-                        navigate("/");
-                      });
-                    }}
-                  >
-                    Logout
-                  </span>
+                  <span onClick={handleLogout}>Logout</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -80,7 +99,6 @@ const Header = () => {
           {/* using navigate that i declared earlier to navigate to auth  */}
         </div>
       </nav>
-      {loading && <BarLoader className="mb-4" width={"100%"} color="#d31b1b" />}
     </>
   );
 };

@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast"; // Import ToastContainer
 
 import AppLayout from "./layout/AppLayout";
 import Landing from "./pages/landing";
@@ -52,6 +53,16 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <UrlProvider>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              padding: "16px",
+              fontSize: "22px",
+            },
+          }}
+        />
         <RouterProvider router={router} />
       </UrlProvider>
     </QueryClientProvider>

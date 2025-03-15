@@ -28,21 +28,14 @@ const Dashboard = () => {
   });
 
   const {
-    loading: loadingClicks,
+    isLoading: isClicksLoading,
+    refetch: refetchClicks,
     data: clicks,
-    fn: fnClicks,
-  } = useFetch(
-    getClicksForUrls,
-    urls?.map((url) => url.id)
-  );
-
-  useEffect(() => {
-    refetchUrls();
-  }, []);
-
-  useEffect(() => {
-    if (urls?.length) fnClicks();
-  }, [urls?.length]);
+  } = useQuery({
+    queryKey: ["clicks", urls?.map((url) => url.id)],
+    queryFn: () => getClicksForUrls(urls?.map((url) => url.id)),
+    enabled: !!urls?.length,
+  });
 
   const filteredUrls = urls?.filter((url) =>
     url.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -85,7 +78,7 @@ const Dashboard = () => {
           <CardHeader>
             <CardTitle>Total Clicks</CardTitle>
           </CardHeader>
-          <CardContent>{clicks?.length} </CardContent>
+          <CardContent>{clicks?.length || 0} </CardContent>
         </Card>
       </div>
       <div className="flex justify-between">

@@ -37,17 +37,6 @@ const LinksCard = ({ url, fetchUrls }) => {
               .catch(() => toast.error("Failed to copy link"));
           }}
         >
-          <Toaster
-            position="bottom-right"
-            reverseOrder={false}
-            toastOptions={{
-              className: "",
-              style: {
-                padding: "20px",
-                fontSize: "20px",
-              },
-            }}
-          />
           <Copy />
         </Button>
         <Button variant="ghost">

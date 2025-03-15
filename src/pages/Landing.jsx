@@ -11,14 +11,37 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
+import { UrlState } from "@/context";
 
 const Landing = () => {
   const [longUrl, setLongUrl] = useState();
   const navigate = useNavigate();
+  const { isAuthenticated } = UrlState();
 
   const handleShorten = (e) => {
     e.preventDefault();
-    if (longUrl) navigate(`/auth?createNew=${longUrl}`);
+    if (!longUrl) {
+      toast.error("Please Enter a URL");
+      return;
+    }
+    if (!isAuthenticated) {
+      toast.error("You must be logged in to shorten a URL.");
+      setTimeout(() => {
+        navigate(`/auth?createNew=${longUrl}`);
+      }, 2000);
+      return;
+    }
+    if (longUrl) {
+      try {
+        new URL(longUrl);
+        navigate(`/auth?createNew=${longUrl}`);
+      } catch (error) {
+        toast.error("Please enter a valid URL");
+      }
+    } else {
+      toast.error("Please enter a URL");
+    }
   };
 
   return (

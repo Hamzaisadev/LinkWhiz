@@ -27,7 +27,7 @@ const Auth = () => {
       </h1>
       <Tabs defaultValue="login" className="w-[400px]">
         <TabsList>
-          <TabsTrigger value="login">login</TabsTrigger>
+          <TabsTrigger value="login">Login</TabsTrigger>
           <TabsTrigger value="signup">Signup</TabsTrigger>
         </TabsList>
         <TabsContent value="login">
