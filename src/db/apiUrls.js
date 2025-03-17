@@ -33,13 +33,13 @@ export async function createUrl(
 
   const fileName = `qr-${short_url}`;
   const { error: storageError } = await supabase.storage
-    .from("qr")
+    .from("qr_codes")
     .upload(fileName, qr_code);
   qr_code;
 
   if (storageError) throw new Error(storageError.message);
 
-  const qr = `${supabaseUrl}/storage/v1/object/public/qrs/${fileName}`;
+  const qr = `${supabaseUrl}/storage/v1/object/public/qr/${fileName}`;
 
   const { data, error } = await supabase
     .from("urls")
