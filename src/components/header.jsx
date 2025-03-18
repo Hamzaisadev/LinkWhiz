@@ -19,7 +19,7 @@ import { Link2, LogOut } from "lucide-react";
 import { UrlState } from "@/context";
 import useFetch from "@/hooks/use-fetch";
 import { logout } from "@/db/apiAuth";
-import { BarLoader } from "react-spinners";
+
 import toast from "react-hot-toast";
 
 const Header = () => {

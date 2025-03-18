@@ -8,11 +8,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { UrlState } from "@/context";
 import { getClicksForUrls } from "@/db/apiClicks";
 import { getUrls } from "@/db/apiUrls";
-import useFetch from "@/hooks/use-fetch";
 import { useQuery } from "@tanstack/react-query";
 import { Filter, FilterIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { BarLoader } from "react-spinners";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");

@@ -15,10 +15,13 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import Error from "./error";
 import { Card } from "./ui/card";
-import { Loader2, LucideAlignHorizontalJustifyCenter } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import { QRCode } from "react-qrcode-logo";
 import { createUrl } from "@/db/apiUrls";
+import logo from "@/assets/LinkWhiz (350 x 100 px).png";
+import { Skeleton } from "./ui/skeleton";
+import toast from "react-hot-toast";
 
 const CreateLink = () => {
   const { user } = UrlState();
@@ -59,6 +62,7 @@ const CreateLink = () => {
   useEffect(() => {
     if (error === null && data) {
       navigate(`/link/${data[0].id}`);
+      toast.success("Link Created Successfully");
     }
   }, [error, data]);
 
@@ -98,13 +102,21 @@ const CreateLink = () => {
             <DialogTitle>Create New Link</DialogTitle>
           </DialogHeader>
 
-          {formValues?.longUrl && (
-            <QRCode
-              logoImage="src/ssets/LinkWhiz (350 x 100 px).png"
-              ref={ref}
-              size={250}
-              value={formValues?.longUrl}
-            />
+          {loading ? (
+            <Skeleton className="h-64 w-64" />
+          ) : (
+            formValues?.longUrl && (
+              <QRCode
+                logoImage={logo}
+                ref={ref}
+                size={250}
+                value={formValues?.longUrl}
+                logoPaddingStyle="circle"
+                removeQrCodeBehindLogo="true"
+                logoPadding={2}
+                qrStyle="circle"
+              />
+            )
           )}
 
           <Input
@@ -156,5 +168,4 @@ const CreateLink = () => {
     </div>
   );
 };
-
 export default CreateLink;
