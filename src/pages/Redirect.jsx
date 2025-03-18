@@ -30,7 +30,7 @@ const Redirect = () => {
   }, [loading]);
 
   if (loading || loadingStats) {
-    return <Loader />;
+    return <Loader loadMsg="Redirecting" />;
   }
 
   return null;

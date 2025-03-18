@@ -1,5 +1,6 @@
 import Header from "@/components/header";
-import React from "react";
+import { Github, Globe, Linkedin } from "lucide-react";
+
 import { Outlet } from "react-router-dom";
 
 const AppLayout = () => {
@@ -10,9 +11,45 @@ const AppLayout = () => {
         <Outlet />
       </main>
 
-      <div className="p-2 text-center text-amber-100 bg-amber-950 mt-10">
-        Made with love by hamza
-      </div>
+      <footer className="bg-gray-900 text-white py-6">
+        <div className="container mx-auto text-center gap-4">
+          <div className="mb-4 gap-4">
+            <p className="text-lg font-semibold py-4">Connect with me:</p>
+            <div className="flex justify-center space-x-6">
+              <a
+                href="https://github.com/hamzaisadev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center hover:text-blue-400 transition duration-300"
+              >
+                <Github className="h-6 w-6 mr-1" /> {/* GitHub Icon */}
+                GitHub
+              </a>
+              <a
+                href="https://hamzaisadev.netlify.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center hover:text-blue-400 transition duration-300"
+              >
+                <Globe className="h-6 w-6 mr-1" /> {/* Portfolio Icon */}
+                Portfolio
+              </a>
+              <a
+                href="https://linkedin.com/in/hamzaisadev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center hover:text-blue-400 transition duration-300"
+              >
+                <Linkedin className="h-6 w-6 mr-1" /> {/* LinkedIn Icon */}
+                LinkedIn
+              </a>
+            </div>
+          </div>
+          <div className="mt-4">
+            <p className="text-sm">Made with love by Hamza</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

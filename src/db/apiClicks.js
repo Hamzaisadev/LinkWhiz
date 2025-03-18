@@ -14,6 +14,19 @@ export async function getClicksForUrls(urlIds) {
 
   return data;
 }
+export async function getClicksForUrl(url_id) {
+  const { data, error } = await supabase
+    .from("clicks")
+    .select("*")
+    .eq("url_id", url_id);
+
+  if (error) {
+    console.error("Unable to load Stats:", error);
+    return null;
+  }
+
+  return data;
+}
 
 const parser = new UAParser();
 export const storeClicks = async ({ id, originalUrl }) => {
@@ -37,6 +50,8 @@ export const storeClicks = async ({ id, originalUrl }) => {
       os: os,
       coming_from: referrer,
     });
+
+    window.location.href = originalUrl;
   } catch (error) {
     console.error("Unable to parse user agent", error);
   }

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Copy, Delete, Download, Home, Trash } from "lucide-react";
+import { Copy, Download, Home, Share2, Trash } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import useFetch from "@/hooks/use-fetch";
 import { deleteUrl } from "@/db/apiUrls";
@@ -10,8 +10,34 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { useState } from "react";
 
 const LinksCard = ({ url, fetchUrls }) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
   const downloadQr = async () => {
     const imageUrl = url?.qr_code;
     const fileName = url?.title;
@@ -38,7 +64,7 @@ const LinksCard = ({ url, fetchUrls }) => {
       // Improved toast message
       toast.success(`Successfully downloaded ${fileName}`);
     } catch (error) {
-      toast.error("Failed to download image");
+      toast.error("Failed to download image", error);
     }
   };
 
@@ -69,6 +95,91 @@ const LinksCard = ({ url, fetchUrls }) => {
       });
   };
 
+  const DeleteDialog = () => {
+    return (
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your
+              link. This will also remove link stats from your dashboard.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction className="bg-red-500 hover:bg-red-500 red">
+              <Button
+                className="bg-red-500 hover:bg-red-500"
+                onClick={handleDelete}
+              >
+                Delete
+              </Button>
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    );
+  };
+
+  const handleShare = () => {
+    navigator.clipboard
+      .writeText(`${preLink}/${url?.short_url}`)
+      .then(() => {
+        toast.success("Link copied to clipboard!");
+        setShareDialogOpen(false);
+      })
+      .catch(() => toast.error("Failed to copy link"));
+  };
+
+  const ShareDialog = () => {
+    return (
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share link</DialogTitle>
+            <DialogDescription>
+              Share this short link, and anyone with it can visit the original
+              page.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex items-center space-x-2">
+            <div className="grid flex-1 gap-2">
+              <label htmlFor="link" className="sr-only">
+                Link
+              </label>
+              <Input
+                id="link"
+                defaultValue={`${preLink}/${
+                  url?.custom_url ? url?.custom_url : url?.short_url
+                }`}
+                readOnly
+              />
+            </div>
+            <Button
+              type="submit"
+              size="sm"
+              className="px-3"
+              onClick={handleShare}
+            >
+              <span className="sr-only">Copy</span>
+              <Copy />
+            </Button>
+          </div>
+          <DialogFooter className="sm:justify-start">
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                Close
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  };
+
   const preLink = window.location.origin;
   return (
     <div className="flex flex-col md:flex-row gap-5 border p-4 bg-gray-900 rounded-lg w-full overflow-hidden justify-center">
@@ -96,68 +207,73 @@ const LinksCard = ({ url, fetchUrls }) => {
         </span>
       </Link>
       <div className="flex flex-row gap-2 flex-wrap">
-        <Button
-          variant="ghost"
-          onClick={() => {
-            window.open(url?.short_url, "_blank");
-          }}
-        >
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="w-[40px] h-[36px]">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  window.open(url?.short_url, "_blank");
+                }}
+              >
                 <Home />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Open Link</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={() => {
-            navigator.clipboard
-              .writeText(`${preLink}/${url?.short_url}`)
-              .then(() => toast.success("Link copied to clipboard!"))
-              .catch(() => toast.error("Failed to copy link"));
-          }}
-        >
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Copy />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Copy Link</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Button>
-        <Button variant="ghost" onClick={downloadQr}>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Open Link</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="w-[40px] h-[36px]">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setShareDialogOpen(true);
+                }}
+              >
+                <Share2 />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Share Link</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="w-[40px] h-[36px]">
+              <Button variant="ghost" onClick={downloadQr}>
                 <Download />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Download QR Code</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Button>
-        <Button variant="destructive" onClick={handleDelete}>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Download QR Code</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="w-[40px] h-[36px]">
+              <Button
+                variant="destructive"
+                onClick={() => setDeleteDialogOpen(true)}
+              >
                 <Trash />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Delete Link</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </Button>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Delete Link</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
+      <ShareDialog />
+      <DeleteDialog />
     </div>
   );
 };
