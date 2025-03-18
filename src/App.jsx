@@ -3,11 +3,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast"; // Import ToastContainer
 
 import AppLayout from "./layout/AppLayout";
-import Landing from "./pages/landing";
-import Dashboard from "./pages/dashboard";
-import Auth from "./pages/auth";
-import Link from "./pages/link";
-import Redirect from "./pages/redirect";
+import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
+import Link from "./pages/Link";
+import Redirect from "./pages/Redirect";
 import UrlProvider from "./context";
 import RequireAuth from "./components/require-auth";
 
