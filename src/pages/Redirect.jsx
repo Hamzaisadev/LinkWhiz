@@ -27,7 +27,7 @@ const Redirect = () => {
     if (!loading && data) {
       fnStats();
     }
-  }, [loading, data]);
+  }, [loading]);
 
   if (loading || loadingStats) {
     return <Loader />;
