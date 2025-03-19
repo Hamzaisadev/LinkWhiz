@@ -35,6 +35,8 @@ import { Input } from "./ui/input";
 import { useState } from "react";
 
 const LinksCard = ({ url, fetchUrls }) => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
 

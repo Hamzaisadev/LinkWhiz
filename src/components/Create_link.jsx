@@ -36,6 +36,8 @@ const CreateLink = () => {
   });
   const ref = useRef();
 
+  const baseUrl = import.meta.env.VITE_BASE_URL;
+
   const schema = Yup.object().shape({
     title: Yup.string().required("Title is required"),
     longUrl: Yup.string()
@@ -136,7 +138,7 @@ const CreateLink = () => {
           {errors.longUrl && <Error message={errors.longUrl} />}
 
           <div className="flex items-center gap-2">
-            <Card className="p-2">linkwhiz.vercel.app</Card>
+            <Card className="p-2">{baseUrl}</Card>
             /
             <Input
               id="customUrl"
