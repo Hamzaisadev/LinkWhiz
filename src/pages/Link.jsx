@@ -41,6 +41,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BeatLoader } from "react-spinners";
 
 const Link = ({ urls, fetchUrls }) => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const downloadQr = async () => {
@@ -166,7 +167,7 @@ const Link = ({ urls, fetchUrls }) => {
 
   const handleShare = () => {
     navigator.clipboard
-      .writeText(`linkwhiz.vercel.app/${link}`)
+      .writeText(`${baseUrl}/${link}`)
       .then(() => {
         toast.success("Link copied to clipboard!");
         setShareDialogOpen(false);
@@ -190,11 +191,7 @@ const Link = ({ urls, fetchUrls }) => {
               <label htmlFor="link" className="sr-only">
                 Link
               </label>
-              <Input
-                id="link"
-                defaultValue={`linkwhiz.vercel.app/${link}`}
-                readOnly
-              />
+              <Input id="link" defaultValue={`${baseUrl}/${link}`} readOnly />
             </div>
             <Button
               type="submit"
@@ -217,7 +214,6 @@ const Link = ({ urls, fetchUrls }) => {
       </Dialog>
     );
   };
-  const preLink = window.location.origin;
 
   return (
     <>
@@ -229,10 +225,10 @@ const Link = ({ urls, fetchUrls }) => {
             {url?.title}
           </span>
           <a
-            href={`${preLink}/${link}`}
+            href={`${baseUrl}/${link}`}
             target="_blank"
             className="text-3xl sm:text-4xl text-blue-400 font-bold hover:underline truncate cursor-pointer"
-          >{`linkwhiz.vercel.app/${link}`}</a>
+          >{`${baseUrl}/${link}`}</a>
 
           <a
             href={url?.original_url}

@@ -126,7 +126,7 @@ const LinksCard = ({ url, fetchUrls }) => {
 
   const handleShare = () => {
     navigator.clipboard
-      .writeText(`${preLink}/${url?.short_url}`)
+      .writeText(`${baseUrl}/${url?.short_url}`)
       .then(() => {
         toast.success("Link copied to clipboard!");
         setShareDialogOpen(false);
@@ -152,7 +152,7 @@ const LinksCard = ({ url, fetchUrls }) => {
               </label>
               <Input
                 id="link"
-                defaultValue={`${preLink}/${
+                defaultValue={`${baseUrl}/${
                   url?.custom_url ? url?.custom_url : url?.short_url
                 }`}
                 readOnly
@@ -197,7 +197,7 @@ const LinksCard = ({ url, fetchUrls }) => {
         </span>
 
         <span className="text-lg md:text-2xl text-blue-400 font-bold hover:underline cursor-pointer truncate">
-          {preLink}/{url?.custom_url ? url?.custom_url : url?.short_url}
+          {baseUrl}/{url?.custom_url ? url?.custom_url : url?.short_url}
         </span>
         <span className="flex items-center gap-1 hover:underline cursor-pointer truncate">
           {url?.original_url}
@@ -213,7 +213,7 @@ const LinksCard = ({ url, fetchUrls }) => {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  window.open(url?.short_url, "_blank");
+                  window.open(`${baseUrl}` / url?.short_url, "_blank");
                 }}
               >
                 <Home />
