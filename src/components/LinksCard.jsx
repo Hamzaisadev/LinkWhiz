@@ -215,7 +215,7 @@ const LinksCard = ({ url, fetchUrls }) => {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  window.open(`${baseUrl}` / url?.short_url, "_blank");
+                  window.open(`${baseUrl}/${url?.short_url}`, "_blank");
                 }}
               >
                 <Home />
