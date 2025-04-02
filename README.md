@@ -126,6 +126,4 @@ The application uses Supabase as its backend database. The following files handl
 - **Link.jsx**: Displays details of a specific shortened link, including click statistics and options to edit or delete.
 - **Redirect.jsx**: Handles redirection from short links to the original URLs, ensuring a smooth user experience.
 
-## Conclusion
-
-This README provides an overview of the LinkWhiz project, including its features, installation instructions, and detailed descriptions of components, hooks, and pages. For further information, refer to the codebase or Supabase documentation. We welcome contributions and feedback from the community to improve the project further.
+Live Website: [LinkWhiz](https://linkwhize.netlify.app/)
